@@ -62,7 +62,18 @@ void main()
 	cout<<endl;*/
 
 	//测试串的匹配函数
-	cout<<"bc在abcd中的位置："<<s1.Index(s4)<<endl;
+	cout<<"bc在abcd中的位置："<<s1.KMP(s4)<<endl;
+
+	//测试串的匹配函数
+	s1.Reverse();
+	cout<<"abcd的反转："<<endl;
+	for(int i = 0;i < s1.GetLength();i++)
+	{
+		cout<<s1.GetData(i)<<" ";
+	
+	}
+	cout<<endl;
+
 	system("pause");
 
 }
