@@ -35,8 +35,10 @@ public:
 	int Strcmp(SeqString & s);//串的比较
 	void Strcpy(SeqString & s);//串的赋值
 	int Index(SeqString & s);//串的匹配，即查找s在原串中的位置
+	void GetNextArray(SeqString & s,int * & next);//返回模式子串的
+	int KMP(SeqString & s); //串的模式匹配，在原串中寻找子串
+	void Reverse();//串的反转
 };
-
 
 #endif
 
@@ -112,6 +114,7 @@ void SeqList<T>::IndexReplace(T x,int i)
  if(i < 0 || i > SeqListLength)throw"替换位置错误";
  data[i] = x;
 }
+
 
 /*-------------------------------------------
           SeqString派生类的成员函数
@@ -200,4 +203,56 @@ int SeqString::Index(SeqString & s)//串的匹配
 	if(j > s.GetLength()) return i+1-j;
 	else return -1;//查找失败
 
+}
+void SeqString::GetNextArray(SeqString & s,int * & next)
+{
+	next = new int[s.GetLength() + 1];
+	next[1] = 0;
+	next[2] = 1;
+	int j ,p =1;//p存储next[j-i]
+	for(j = 3;j <= s.GetLength();++j)
+	{
+		while(p > 1 && (s.GetData(p-1) != s.GetData(j-2)))
+			p = next[p];
+		if(s.GetData(p-1) == s.GetData(j-2))
+			++p;
+		next[j] = p;
+	
+	}
+
+}
+
+
+int SeqString::KMP(SeqString & s)//模式串匹配
+{
+ int * next;
+ GetNextArray(s,next);
+ int i =1,j=1;
+ while(i <= GetLength() && j <= s.GetLength())
+ {
+	 if(GetData(i-1) == s.GetData(j-1))
+	 {
+	  i++;
+	  j++;
+	 }
+	 else if(!next[j]){++i;j = 1;}
+	 else {j = next[j];}
+ }
+ delete [] next;
+ if(j > s.GetLength()) return i+1-j;
+ else return -1;
+
+}
+void SeqString::Reverse()//实现串的反转
+{
+	int i=0,j=GetLength()-1;
+ while(i <= j)
+ {
+   char tem;
+   tem = GetData(i);
+   IndexReplace(GetData(j),i);
+   IndexReplace(tem,j);
+   ++i;
+   --j;
+ }
 }
